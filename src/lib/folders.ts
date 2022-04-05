@@ -1,7 +1,7 @@
-import { reactive, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { stack, state } from '.'
 
-watch(() => state.folderUid, setSelectedFolder)
+watch(() => state.uid, setSelectedFolder)
 watch(() => [state.sortBy, state.sortAscending], fetchSelectedFolderChildren)
 
 /**
@@ -54,45 +54,37 @@ async function findAssetFolder(
 /**
  *
  */
-export const selectedFolder = reactive<IReactiveSelectedFolder>({
-  loading: false,
-  data: undefined,
-})
+export const selectedFolderLoading = ref<boolean>(false)
 
 /**
  *
  */
 async function setSelectedFolder() {
-  selectedFolder.loading = true
+  selectedFolderLoading.value = true
   try {
-    selectedFolder.data = state.folderUid
-      ? await findAssetFolder(state.folderUid)
-      : undefined
+    state.data = state.uid ? await findAssetFolder(state.uid) : undefined
 
     // fetch children
     fetchSelectedFolderChildren()
   } catch (error) {
     //
   } finally {
-    selectedFolder.loading = false
+    selectedFolderLoading.value = false
   }
 }
 
 /**
  * selected folder children
  */
-export const selectedFolderChildren = reactive<IReactiveSelectFolderChildren>({
-  loading: false,
-  data: [],
-})
+export const selectedFolderChildrenLoading = ref<boolean>(false)
 
 /**
  *
  */
 export async function fetchSelectedFolderChildren() {
-  selectedFolderChildren.loading = true
+  selectedFolderChildrenLoading.value = true
   try {
-    let query = stack.value.Asset.Query().where('parent_uid', state.folderUid)
+    let query = stack.value.Asset.Query().where('parent_uid', state.uid)
     // sorting
     query = state.sortAscending
       ? query.ascending(state.sortBy)
@@ -100,11 +92,11 @@ export async function fetchSelectedFolderChildren() {
     // find
     const { assets } = await query.find()
     // set
-    selectedFolderChildren.data = assets
+    state.children = assets
   } catch (error) {
     console.warn(error)
   } finally {
-    selectedFolderChildren.loading = false
+    selectedFolderChildrenLoading.value = false
   }
 }
 

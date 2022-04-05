@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { state } from '../lib'
-import { ESortBy, fetchFolders, folders, selectedFolder } from '../lib/folders'
+import { ESortBy, fetchFolders, folders } from '../lib/folders'
 import { debounce } from '../lib/util'
 
 const search = debounce(fetchFolders, 500)
@@ -25,11 +25,11 @@ const search = debounce(fetchFolders, 500)
     </div>
   </div>
 
-  <div v-else-if="folders.data.length" class="list-group">
+  <div v-else-if="folders.data?.length" class="list-group">
     <a
       v-for="folder in folders.data"
       :key="folder.uid"
-      @click.prevent="state.folderUid = folder.uid"
+      @click.prevent="state.uid = folder.uid"
       href="#"
       class="
         list-group-item list-group-item-action

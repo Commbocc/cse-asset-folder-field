@@ -8,6 +8,9 @@ declare module '*.vue' {
 }
 
 declare module '@contentstack/ui-extensions-sdk' {
-  const cs: any
+  const cs: {
+    SDK_VERSION: string
+    init: () => Promise<IContentStackUIExtension>
+  }
   export default cs
 }

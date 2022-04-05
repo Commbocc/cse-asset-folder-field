@@ -2,8 +2,7 @@
 import SortAndOrder from './components/SortAndOrder.vue'
 import SelectedAssetFolderCard from './components/SelectedAssetFolderCard.vue'
 import SearchAssetFolders from './components/SearchAssetFolders.vue'
-import { initExtension, isExtension } from './lib'
-import { selectedFolder } from './lib/folders'
+import { initExtension, isExtension, state } from './lib'
 
 initExtension()
 </script>
@@ -21,9 +20,7 @@ initExtension()
 
   <section v-else>
     <SortAndOrder />
-    <SelectedAssetFolderCard v-if="selectedFolder.data" />
+    <SelectedAssetFolderCard v-if="state.data" />
     <SearchAssetFolders v-else />
   </section>
 </template>
-
-<style src="./assets/main.scss" lang="scss"></style>

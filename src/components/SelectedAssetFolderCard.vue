@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { state } from '../lib'
-import { selectedFolder, selectedFolderChildren } from '../lib/folders'
-const folder = computed(() => selectedFolder.data)
+import { selectedFolderChildrenLoading } from '../lib/folders'
+const folder = computed(() => state.data)
 </script>
 
 <template>
@@ -13,7 +13,7 @@ const folder = computed(() => selectedFolder.data)
 
         <!-- deselect -->
         <button
-          @click.prevent="state.folderUid = ''"
+          @click.prevent="state.uid = ''"
           class="btn-close pull-right"
           aria-label="Deselect"
         ></button>
@@ -26,7 +26,7 @@ const folder = computed(() => selectedFolder.data)
     <div class="card-body">
       <!-- <pre>{{ selectedFolderChildren }}</pre> -->
       <div
-        v-if="selectedFolderChildren.loading"
+        v-if="selectedFolderChildrenLoading"
         class="d-flex justify-content-center"
       >
         <div class="spinner-border" role="status">
@@ -36,11 +36,11 @@ const folder = computed(() => selectedFolder.data)
 
       <!--  -->
       <div
-        v-else-if="selectedFolderChildren.data.length"
+        v-else-if="state.children?.length"
         class="list-group list-group-flush"
       >
         <div
-          v-for="asset in selectedFolderChildren.data"
+          v-for="asset in state.children"
           :key="asset.uid"
           class="list-group-item"
         >

@@ -1,7 +1,7 @@
 import CS from '@contentstack/ui-extensions-sdk'
 import { computed, reactive, ref, watch } from 'vue'
 
-let extension: any
+let extension: IContentStackUIExtension
 export const isExtension = ref(false)
 
 export const extensionSettings = reactive({})
@@ -15,7 +15,7 @@ export const state = reactive<IReactiveState>({
   searchTerm: '',
   sortBy: 'filename',
   sortAscending: true,
-  folderUid: '',
+  uid: '',
 })
 
 watch(
@@ -31,14 +31,16 @@ export async function initExtension() {
   try {
     extension = await CS.init()
     extension.window.enableAutoResizing()
-    isExtension.value = true
 
     // assign settings
-    Object.assign(extensionSettings, extension.config)
-    // const { api_key } = stack.value._data
+    const { api_key } = extension.stack._data
+    Object.assign(extensionSettings, { api_key, ...extension.config })
 
+    // set field data
     const fieldData: Object = field.value.getData()
     if (Object.keys(fieldData).length !== 0) Object.assign(state, fieldData)
+
+    isExtension.value = true
   } catch (error) {
     isExtension.value = false
     console.warn(`Unable to load ContentStack extension.`)
